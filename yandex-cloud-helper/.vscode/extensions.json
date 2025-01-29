@@ -1,0 +1,21 @@
+{
+    "recommendations": [
+        "streetsidesoftware.code-spell-checker",
+        "kisstkondoros.vscode-codemetrics",
+        "editorconfig.editorconfig",
+        "usernamehw.errorlens",
+        "tamasfe.even-better-toml",
+        "mhutchie.git-graph",
+        "equinusocio.vsc-material-theme-icons",
+        "ms-python.mypy-type-checker",
+        "ms-python.vscode-pylance",
+        "ms-python.python",
+        "ms-python.debugpy",
+        "donjayamanne.python-environment-manager",
+        "zeshuaro.vscode-python-poetry",
+        "charliermarsh.ruff",
+        "streetsidesoftware.code-spell-checker-russian",
+        "gruntfuggly.todo-tree",
+        "shardulm94.trailing-spaces",
+    ]
+}

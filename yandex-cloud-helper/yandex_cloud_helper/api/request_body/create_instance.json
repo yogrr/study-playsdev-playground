@@ -1,0 +1,40 @@
+{
+    "folderId": "b1gs55f7ueeslt3ok3d5",
+
+    "name": "example",
+    "zoneId": "ru-central1-b",
+    "platformId": "standard-v3",
+
+    "resourcesSpec": {
+      "memory": "2147483648",
+      "cores": "2"
+    },
+
+    "metadata": {
+      "user-data": "#cloud-config\nusers:\n  - name: yogrr\n    groups: sudo\n    shell: /bin/bash\n    sudo: 'ALL=(ALL) NOPASSWD:ALL'\n    ssh_authorized_keys:\n      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOK2Vb4QEwKNZCdPNob6qumPWwkqycj0Ooh/iJlReUo6 PlaysDev, Yandex.Cloud"
+    },
+
+    "bootDiskSpec": {
+      "diskSpec": {
+
+        "size": "8589934592",
+        "imageId": "fd866d9q7rcg6h4udadk"
+
+      }
+    },
+
+    "networkInterfaceSpecs": [
+        {
+            "subnetId": "e2li53r3tkomgoblfofv",
+            "primaryV4AddressSpec": {
+                "oneToOneNatSpec": {
+                    "ipVersion": "IPV4"
+                }
+            }
+        }
+    ],
+
+    "schedulingPolicy": {
+        "preemptible": true
+    }
+}
