@@ -1,0 +1,14 @@
+{
+    "recommendations": [
+        "editorconfig.editorconfig",
+        "equinusocio.vsc-material-theme-icons",
+        "gruntfuggly.todo-tree",
+        "hashicorp.terraform",
+        "irongeek.vscode-env",
+        "mhutchie.git-graph",
+        "ms-vsliveshare.vsliveshare",
+        "shardulm94.trailing-spaces",
+        "streetsidesoftware.code-spell-checker-russian",
+        "streetsidesoftware.code-spell-checker"
+    ]
+}
