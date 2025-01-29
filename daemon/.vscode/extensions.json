@@ -1,0 +1,18 @@
+{
+    "recommendations": [
+        "coolbear.systemd-unit-file",
+        "editorconfig.editorconfig",
+        "equinusocio.vsc-material-theme-icons",
+        "gruntfuggly.todo-tree",
+        "irongeek.vscode-env",
+        "mhutchie.git-graph",
+        "ms-vsliveshare.vsliveshare",
+        "shakram02.bash-beautify",
+        "shardulm94.trailing-spaces",
+        "softwaredotcom.swdc-vscode",
+        "streetsidesoftware.code-spell-checker-russian",
+        "streetsidesoftware.code-spell-checker",
+        "timonwong.shellcheck",
+        "usernamehw.errorlens"
+    ]
+}
