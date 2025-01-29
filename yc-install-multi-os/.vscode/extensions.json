@@ -1,0 +1,18 @@
+{
+    "recommendations": [
+        "editorconfig.editorconfig",
+        "equinusocio.vsc-material-theme-icons",
+        "gruntfuggly.todo-tree",
+        "irongeek.vscode-env",
+        "kisstkondoros.vscode-codemetrics",
+        "mhutchie.git-graph",
+        "shakram02.bash-beautify",
+        "shardulm94.trailing-spaces",
+        "softwaredotcom.swdc-vscode",
+        "streetsidesoftware.code-spell-checker-russian",
+        "streetsidesoftware.code-spell-checker",
+        "timonwong.shellcheck",
+        "usernamehw.errorlens",
+        "ms-vscode.powershell",
+    ]
+}
