@@ -3,20 +3,20 @@
 
 - name: ensure .ssh directory exists
   file:
-    path: "{{ ansible_user_dir }}/.ssh"
+    path: "/home/{{ ansible_user }}/.ssh"
     state: directory
     mode: 0700
 
 - name: copy SSH private key from Ansible host
   copy:
-    src: "{{ ansible_user_dir }}/.ssh/{{ github_host_private_key_filename }}"
-    dest: "{{ ansible_user_dir }}/.ssh/{{ github_host_private_key_filename }}"
+    src: "/home/{{ ansible_user }}/.ssh/{{ github_host_private_key_filename }}"
+    dest: "/home/{{ ansible_user }}/.ssh/{{ github_host_private_key_filename }}"
     mode: 0600
 
 - name: force clone repo
   git:
     repo: git@github.com:{{ git_username }}/{{ git_repo_name }}.git
-    dest: "{{ ansible_user_dir }}/{{ git_repo_name }}"
-    key_file: "{{ ansible_user_dir }}/.ssh/{{ github_host_private_key_filename }}"
+    dest: "/home/{{ ansible_user }}/{{ git_repo_name }}"
+    key_file: "/home/{{ ansible_user }}/.ssh/{{ github_host_private_key_filename }}"
     accept_hostkey: yes
     force: yes
