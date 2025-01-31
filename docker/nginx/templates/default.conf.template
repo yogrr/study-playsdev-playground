@@ -24,6 +24,18 @@ server {
         proxy_pass http://apache:8080;
     }
 
+    location /google/ {
+        rewrite ^/google/(.*)$ /$1 break;
+
+        proxy_pass http://google.com;
+    }
+
+    location /redblue/ {
+        rewrite ^/redblue/(.*)$ /$1 break;
+
+        proxy_pass http://redblue;
+    }
+
     if ($host = ${DOMAIN}) {
         return 301 https://$host$request_uri;
     }
@@ -32,7 +44,7 @@ server {
 server {
     listen 8001;
 
-    server_name first-virtual-server.apache;
+    server_name first-virtual-server-apache;
 
     include /tmp/nginx/conf.d/yc.serverless.conf.locations;
 }
@@ -40,7 +52,7 @@ server {
 server {
     listen 8002;
 
-    server_name second-virtual-server.apache;
+    server_name second-virtual-server-apache;
 
     include /tmp/nginx/conf.d/yc.serverless.conf.locations;
 }
@@ -48,4 +60,31 @@ server {
 upstream php_servers {
     server 127.0.0.1:8001;
     server 127.0.0.1:8002;
+}
+
+server {
+    listen 8003;
+
+    server_name red-virtual-server-redblue;
+
+    location / {
+        root /usr/share/nginx/html/redblue/red;
+        index index.html index.htm;
+    }
+}
+
+server {
+    listen 8004;
+
+    server_name blue-virtual-server-redblue;
+
+    location / {
+        root /usr/share/nginx/html/redblue/blue;
+        index index.html index.htm;
+    }
+}
+
+upstream redblue {
+    server 127.0.0.1:8003;
+    server 127.0.0.1:8004;
 }

@@ -8,13 +8,9 @@
     git_repo_name: study-playsdev
     git_repo_path: /home/{{ ansible_user }}/{{ git_repo_name }}/docker
 
-  # roles:
-    # - setup-docker
-    # - role: clone-git-repo
-    #   vars:
-    #     git_username: {{ git_username }}
-    #     git_repo_name: {{ git_repo_name }}
-    # - setup-compose-project
+  roles:
+    - setup-docker
+    - clone-git-repo
 
   tasks:
     - name: copy .env.example to .env
@@ -22,26 +18,31 @@
         src: "{{ git_repo_path }}/.env.example"
         dest: "{{ git_repo_path }}/.env"
         remote_src: yes
+      changed_when: false
 
     - name: replace variable DOMAIN in .env
       replace:
         path: "{{ git_repo_path }}/.env"
         regexp: 'DOMAIN=".*"'
         replace: 'DOMAIN="illusior.ru"'
+      changed_when: false
 
     - name: replace variable DOMAIN_OWNER_EMAIL in .env
       replace:
         path: "{{ git_repo_path }}/.env"
         regexp: 'DOMAIN_OWNER_EMAIL=".*"'
         replace: 'DOMAIN_OWNER_EMAIL="gazrafail@gmail.com"'
+      changed_when: false
 
     - name: replace variable REGISTRY in .env
       replace:
         path: "{{ git_repo_path }}/.env"
         regexp: 'REGISTRY=".*"'
         replace: 'REGISTRY="illusior/nginx-apache"'
+      changed_when: false
 
     - name: launch project with docker compose
       shell: |
         cd {{ git_repo_path }} &&
-        docker compose --env-file .env up nginx
+        docker compose --env-file .env up -d --force-recreate nginx
+      changed_when: false

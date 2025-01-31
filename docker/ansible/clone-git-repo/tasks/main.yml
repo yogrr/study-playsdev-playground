@@ -1,6 +1,11 @@
 ---
 # tasks file for clone-git-repo
 
+- name: ensure git is installed
+  package:
+    name: git
+    state: present
+
 - name: ensure .ssh directory exists
   file:
     path: "/home/{{ ansible_user }}/.ssh"
