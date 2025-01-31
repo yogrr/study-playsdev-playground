@@ -1,0 +1,51 @@
+server {
+    listen ${PORT};
+    listen [::]:${PORT};
+
+    server_name ${DOMAIN};
+
+    include conf.d/site.conf.locations;
+
+    # for Yandex.Cloud's Serverless Containers under API Gateway
+    #
+    # TODO: it may not work locally due to
+    # SSL_do_handshake() failed (SSL: error:0A0000C6:SSL
+    # routines::packet length too long error:0A000139:SSL routines::record layer failure)
+    location /yc-serverless-apache/ {
+        rewrite ^/container/(.*)$ /$1 break;
+
+        proxy_pass https://php_servers;
+    }
+
+    # for local apache server as docker's service
+    location /apache/ {
+        rewrite ^/apache/(.*)$ /$1 break;
+
+        proxy_pass http://apache:8080;
+    }
+
+    if ($host = ${DOMAIN}) {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 8001;
+
+    server_name first-virtual-server.apache;
+
+    include /tmp/nginx/conf.d/yc.serverless.conf.locations;
+}
+
+server {
+    listen 8002;
+
+    server_name second-virtual-server.apache;
+
+    include /tmp/nginx/conf.d/yc.serverless.conf.locations;
+}
+
+upstream php_servers {
+    server 127.0.0.1:8001;
+    server 127.0.0.1:8002;
+}

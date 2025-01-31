@@ -1,0 +1,50 @@
+- name: ensure old versions of docker are not installed
+  package:
+    name:
+      - docker
+      - docker-client
+      - docker-client-latest
+      - docker-common
+      - docker-latest
+      - docker-latest-logrotate
+      - docker-logrotate
+      - docker-selinux
+      - docker-engine-selinux
+      - docker-engine
+    state: absent
+
+- name: add docker GPG key
+  rpm_key:
+    key: "{{ docker_yum_gpg_key }}"
+    state: present
+  when: docker_add_repo | bool
+
+- name: add Docker repository
+  get_url:
+    url: "{{ docker_yum_repo_url }}"
+    dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
+    owner: root
+    group: root
+    mode: 0644
+  when: docker_add_repo | bool
+
+- name: configure docker nightly repo
+  ini_file:
+    dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
+    section: 'docker-{{ docker_edition }}-nightly'
+    option: enabled
+    value: '{{ docker_yum_repo_enable_nightly }}'
+    mode: 0644
+    no_extra_spaces: true
+  when: docker_add_repo | bool
+
+- name: configure docker test repo
+  ini_file:
+    dest: '/etc/yum.repos.d/docker-{{ docker_edition }}.repo'
+    section: 'docker-{{ docker_edition }}-test'
+    option: enabled
+    value: '{{ docker_yum_repo_enable_test }}'
+    mode: 0644
+    no_extra_spaces: true
+  when: docker_add_repo | bool
+

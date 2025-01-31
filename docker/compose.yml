@@ -1,0 +1,61 @@
+services:
+  nginx:
+    depends_on:
+      - apache
+    networks:
+      - network
+    container_name: nginx
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PORT=80
+    image: ${REGISTRY}:nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./nginx/html/:/usr/share/nginx/html/
+
+      - ./certbot/conf/:/etc/letsencrypt/
+      - ./certbot/www/:/var/www/certbot/
+      #
+      # you must provide this if you want to use your own ssl certs (e.g openssl)
+      # - ./fullchain.pem/:/etc/letsencrypt/live/${DOMAIN}/fullchain.pem
+      # - ./privkey.pem/:/etc/letsencrypt/live/${DOMAIN}/privkey.pem
+
+  apache:
+    networks:
+      - network
+    container_name: apache
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - PORT=8080
+    image: ${REGISTRY}:apache
+    ports:
+      - 8080:8080
+    volumes:
+      - ./apache/apache2.conf:/etc/apache2/apache2.conf
+      - ./apache/ports.conf:/etc/apache2/ports.conf
+
+      - ./apache/sites-available/:/etc/apache2/sites-available/
+      - ./apache/html/:/var/www/html/
+
+  certbot:
+    depends_on:
+      - nginx
+    env_file:
+      - .env
+    image: certbot/certbot
+    container_name: certbot
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email ${DOMAIN_OWNER_EMAIL} -d ${DOMAIN} --agree-tos
+    volumes:
+      - ./certbot/conf/:/etc/letsencrypt/
+      - ./certbot/www/:/var/www/certbot/
+
+networks:
+  network:

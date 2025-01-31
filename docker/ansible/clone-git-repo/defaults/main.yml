@@ -1,0 +1,5 @@
+---
+# defaults file for clone-git-repo
+git_username: admin
+git_repo_name: default
+github_host_private_key_filename: gh

@@ -1,0 +1,16 @@
+ARG BASE_IMAGE_VER=8.2-apache
+ARG BUILD_PLATFORM=linux/amd64
+
+FROM --platform=${BUILD_PLATFORM} php:${BASE_IMAGE_VER} AS base_image
+
+COPY ./apache/apache2.conf /etc/apache2/apache2.conf
+COPY ./apache/ports.conf /etc/apache2/ports.conf
+
+COPY ./apache/sites-available/ /etc/apache2/sites-available/
+COPY ./apache/html/ /var/www/html/
+
+# for Yandex.Cloud's Serverless
+EXPOSE ${PORT:-${PORT_APACHE}}
+EXPOSE ${PORT_APACHE}
+
+VOLUME /var/www/html/

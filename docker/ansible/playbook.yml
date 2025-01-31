@@ -1,0 +1,13 @@
+---
+- name: Install Docker Ubuntu+Fedora + Up project from GitHub
+  hosts: yc_hosts
+  user: yogrr
+  become: true
+
+  roles:
+    # - setup-docker
+    - role: clone-git-repo
+      vars:
+        git_username: yogrr
+        git_repo_name: study-playsdev
+    # - setup-compose-project

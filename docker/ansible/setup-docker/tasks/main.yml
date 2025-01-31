@@ -1,0 +1,97 @@
+---
+# tasks file for setup-docker
+
+- name: load OS-specific vars.
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - '{{ansible_distribution}}.yml'
+        - '{{ansible_os_family}}.yml'
+        - main.yml
+      paths:
+        - 'vars'
+
+- name: ensure group "docker" exists
+  group:
+    name: docker
+    state: present
+
+- name: set docker user
+  user:
+    name: docker
+    comment: docker
+    # uid: 1040
+    group: docker
+
+- name: get the username
+  become: false
+  command: whoami
+  register: current_username
+  changed_when: false
+
+- name: add current user to docker users group variable
+  ansible.builtin.set_fact:
+    docker_users: "{{ docker_users | default([]) + [ current_username.stdout ] }}"
+
+- name: include tasks for Debian
+  ansible.builtin.include_tasks: debian.yml
+  when: ansible_os_family == 'Debian'
+
+- name: include tasks for Fedora
+  ansible.builtin.include_tasks: fedora.yml
+  when: ansible_os_family == 'RedHat'
+
+- name: ensure group "docker" exists
+  group:
+    name: docker
+    state: present
+
+- name: install docker packages (with downgrade option) Ubuntu/Debian and Fedora/RedHat
+  ansible.builtin.package:
+    name: "{{ docker_packages }}"
+    state: "{{ docker_packages_state }}"
+    allow_downgrade: true
+  notify: restart docker
+  ignore_errors: "{{ ansible_check_mode }}"
+  when: "ansible_version.full is version_compare('2.12', '>=') and ansible_os_family in ['RedHat', 'Debian']"
+
+- name: install docker-compose-plugin (with downgrade option) Ubuntu/Debian and Fedora/RedHat
+  ansible.builtin.package:
+    name: "{{ docker_compose_package }}"
+    state: "{{ docker_compose_package_state }}"
+    allow_downgrade: true
+  notify: restart docker
+  ignore_errors: "{{ ansible_check_mode }}"
+  when: "docker_install_compose_plugin | bool == true and ansible_version.full is version_compare('2.12', '>=') and ansible_os_family in ['RedHat', 'Debian']"
+
+- name: ensure docker is started and enabled at boot
+  ansible.builtin.service:
+    name: docker
+    state: "{{ docker_service_state }}"
+    enabled: "{{ docker_service_enabled }}"
+  ignore_errors: "{{ ansible_check_mode }}"
+  when: docker_service_manage | bool
+
+- name: ensure handlers are notified now to avoid firewall conflicts
+  meta: flush_handlers
+
+- name: get docker group info using getent
+  ansible.builtin.getent:
+    database: group
+    key: docker
+    split: ':'
+  when: docker_users | length > 0
+
+- name: check if there are any users to add to the docker group
+  ansible.builtin.set_fact:
+    at_least_one_user_to_modify: true
+  when:
+    - docker_users | length > 0
+    - item not in ansible_facts.getent_group["docker"][2]
+  with_items: "{{ docker_users }}"
+
+- name: include tasks for Docker users
+  ansible.builtin.include_tasks: docker-users.yml
+  when: at_least_one_user_to_modify is defined
+
