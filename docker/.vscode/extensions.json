@@ -19,5 +19,7 @@
         "streetsidesoftware.code-spell-checker-russian",
         "streetsidesoftware.code-spell-checker",
         "usernamehw.errorlens",
+        "nicolasvuillamy.vscode-groovy-lint",
+        "ivory-lab.jenkinsfile-support",
     ]
 }

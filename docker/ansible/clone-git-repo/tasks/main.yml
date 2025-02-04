@@ -17,6 +17,7 @@
     src: "/home/{{ ansible_user }}/.ssh/{{ github_host_private_key_filename }}"
     dest: "/home/{{ ansible_user }}/.ssh/{{ github_host_private_key_filename }}"
     mode: 0600
+  ignore_errors: true
 
 - name: force clone repo
   git:

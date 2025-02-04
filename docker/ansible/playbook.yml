@@ -44,5 +44,6 @@
     - name: launch project with docker compose
       shell: |
         cd {{ git_repo_path }} &&
-        docker compose --env-file .env up -d --force-recreate nginx
+        docker compose --env-file .env up -d --force-recreate nginx &&
+        docker image prune -a -f
       changed_when: false

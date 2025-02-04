@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+    stages {
+        stage('tools version') {
+            steps {
+                sh '''
+                    docker info
+                    docker version
+                    docker compose version
+
+                    ansible --version
+                '''
+            }
+        }
+        stage('rebuild images and push to registry') {
+            steps {
+                dir('docker') {
+                    sh '''
+                        docker build -f Dockerfile.nginx -t illusior/nginx-apache:nginx --target base_image .
+                        docker push illusior/nginx-apache:nginx
+
+                        docker build -f Dockerfile.apache -t illusior/nginx-apache:apache --target base_image .
+                        docker push illusior/nginx-apache:apache
+
+                        docker image prune -a -f
+                    '''
+                }
+            }
+        }
+        stage('deploy') {
+            steps {
+                dir('docker/ansible') {
+                    ansiColor('xterm') {
+                        ansiblePlaybook(
+                            playbook: 'playbook.yml',
+                            inventory: 'inventory.yml',
+                            credentialsId: 'yc_ssh_yogrr',
+                            colorized: true
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
